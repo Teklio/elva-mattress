@@ -188,21 +188,21 @@ export default function Hero() {
           </motion.p>
 
           <motion.a
-            href="#products"
+            href="/products"
             id="hero-explore-btn"
             variants={textVariants}
             whileHover={{ scale: 1.04, backgroundColor: "#D1B07A", color: "#1C3144", borderColor: "#D1B07A" }}
             whileTap={{ scale: 0.97 }}
-            className="inline-flex items-center gap-3 bg-transparent text-white border border-white/40 px-8 py-3.5 rounded-full text-sm font-semibold transition-colors duration-300 cursor-pointer self-center lg:self-start"
+            className="inline-flex items-center gap-3.5 bg-transparent text-white border-2 border-white/70 px-10 py-5 sm:px-12 sm:py-5.5 rounded-2xl text-lg font-bold transition-all duration-300 cursor-pointer self-center lg:self-start shadow-sm"
           >
-            Explore Products
+            <span>Explore Products</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-4 h-4"
+              className="w-5 h-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              strokeWidth={2}
+              strokeWidth={2.2}
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>
