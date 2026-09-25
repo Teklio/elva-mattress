@@ -15,12 +15,12 @@ export default function Footer() {
                     <div className="flex flex-col items-start space-y-6">
                         <Link href="/" className="inline-block group">
                             <Image
-                                src="/logo.png"
+                                src="/logo-white.png"
                                 alt="ELVA – Sleep Defined"
                                 width={180}
                                 height={60}
                                 priority
-                                className="object-contain h-16 sm:h-20 w-auto brightness-0 invert transition-transform duration-300 group-hover:scale-105"
+                                className="object-contain h-16 sm:h-20 w-auto transition-transform duration-300 group-hover:scale-105"
                             />
                         </Link>
                         <p className="text-white/80 text-base sm:text-lg font-light leading-relaxed max-w-sm">

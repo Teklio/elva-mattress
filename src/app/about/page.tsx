@@ -86,7 +86,7 @@ export default function AboutPage() {
             </motion.p>
             
             <motion.div variants={fadeUpVariants} className="pt-6">
-              <a href="/#products" className="inline-flex items-center gap-4 bg-primary text-white px-8 py-4 rounded-full text-sm font-semibold uppercase tracking-widest hover:bg-secondary hover:text-primary transition-all duration-300">
+              <a href="/products" className="inline-flex items-center gap-4 bg-primary text-white px-8 py-4 rounded-full text-sm font-semibold uppercase tracking-widest hover:bg-secondary hover:text-primary transition-all duration-300">
                 Discover the Collection
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />

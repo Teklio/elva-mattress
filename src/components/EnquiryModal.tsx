@@ -8,12 +8,14 @@ interface EnquiryModalProps {
   isOpen: boolean;
   onClose: () => void;
   productName?: string;
+  subtitle?: string;
 }
 
 export default function EnquiryModal({
   isOpen,
   onClose,
   productName,
+  subtitle,
 }: EnquiryModalProps) {
   const [formData, setFormData] = useState({
     fullname: "",
@@ -83,9 +85,14 @@ export default function EnquiryModal({
                 Quick Enquiry
               </span>
               {productName && (
-                <p className="text-xs text-primary/70 mt-1 font-medium bg-primary/5 px-3 py-1 rounded-full">
-                  Product: {productName}
-                </p>
+                <div className="mt-1 text-center">
+                  <p className="text-xs text-primary font-semibold bg-primary/5 px-3 py-1 rounded-full inline-block">
+                    {productName}
+                  </p>
+                  {subtitle && (
+                    <p className="text-[11px] text-secondary font-medium mt-0.5">{subtitle}</p>
+                  )}
+                </div>
               )}
             </div>
 

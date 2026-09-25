@@ -34,10 +34,18 @@ function EnquiryIcon({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
-export default function Header() {
+interface HeaderProps {
+  logoVariant?: "default" | "white";
+}
+
+export default function Header({ logoVariant }: HeaderProps = {}) {
   const [isOpen, setIsOpen] = useState(false);
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
   const pathname = usePathname();
+
+  const isWhiteLogo =
+    logoVariant === "white" || (pathname && pathname.startsWith("/products"));
+  const logoSrc = isWhiteLogo ? "/logo-white.png" : "/logo.png";
 
   return (
     <>
@@ -51,7 +59,7 @@ export default function Header() {
         <div className="flex-shrink-0">
           <Link href="/">
             <Image
-              src="/logo.png"
+              src={logoSrc}
               alt="ELVA – Sleep Defined"
               width={130}
               height={44}
@@ -149,12 +157,12 @@ export default function Header() {
                 {/* Header inside drawer */}
                 <div className="flex items-center justify-between mb-10">
                   <Image
-                    src="/logo.png"
+                    src="/logo-white.png"
                     alt="ELVA"
                     width={100}
                     height={34}
                     priority
-                    className="object-contain h-8 w-auto brightness-0 invert"
+                    className="object-contain h-8 w-auto"
                   />
                   <button
                     onClick={() => setIsOpen(false)}

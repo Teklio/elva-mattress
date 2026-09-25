@@ -73,7 +73,7 @@ export default function About() {
     <div
       ref={containerRef}
       id="about"
-      className="w-full bg-white pb-16 sm:pb-24 flex flex-col items-center justify-center overflow-hidden relative border-t border-gray-100"
+      className="w-full bg-white pb-16 flex flex-col items-center justify-center overflow-hidden relative border-t border-gray-100"
     >
       {/* Infinite Scrolling Marquee Banner */}
       <div className="w-full overflow-hidden border-b border-black/[0.06] py-6 sm:py-8 bg-secondary select-none relative z-10 flex mb-16 sm:mb-24">
