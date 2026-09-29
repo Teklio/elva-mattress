@@ -30,11 +30,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const spaceId = process.env.STORYBLOK_SPACE_ID || "295554697509620";
-    const mapiToken = process.env.STORYBLOK_MANAGEMENT_TOKEN || "sb_pat_Jd6SYpn7h09PFEUWZiyHmu9yuzVXCbsZSeno4YZQCwE";
-    const rawFolderId = process.env.STORYBLOK_CONTACT_FOLDER_ID ? Number(process.env.STORYBLOK_CONTACT_FOLDER_ID) : 225297095467333;
+    const spaceId = process.env.STORYBLOK_SPACE_ID;
+    const mapiToken = process.env.STORYBLOK_MANAGEMENT_TOKEN;
+    const rawFolderId = process.env.STORYBLOK_CONTACT_FOLDER_ID
+      ? Number(process.env.STORYBLOK_CONTACT_FOLDER_ID)
+      : undefined;
 
-    const targetFolderId = rawFolderId && rawFolderId !== Number(spaceId) ? rawFolderId : 225297095467333;
+    if (!spaceId || !mapiToken || !rawFolderId) {
+      console.error("Missing required Storyblok environment variables (STORYBLOK_SPACE_ID, STORYBLOK_MANAGEMENT_TOKEN, or STORYBLOK_CONTACT_FOLDER_ID)");
+      return NextResponse.json(
+        { success: false, error: "Server configuration error: Missing Storyblok environment variables." },
+        { status: 500 }
+      );
+    }
+
+    const targetFolderId = rawFolderId;
 
     const storyName = `${name} (${phone || email})`;
     const slug = `lead-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
