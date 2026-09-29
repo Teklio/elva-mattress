@@ -26,10 +26,8 @@ export default function ProductDetailClient({
   const isMattress = product.category === "Mattress";
   const isPillow = product.category === "Pillows";
 
-  // Active Mattress Size
-  const [selectedSize, setSelectedSize] = useState<string>(
-    mattressSizes[2].name // Queen Size default
-  );
+  // Active Mattress Size (if selected via Size Chart modal)
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   // Active showcase image
   const [activeImage, setActiveImage] = useState<string>(product.image);
@@ -38,20 +36,24 @@ export default function ProductDetailClient({
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
   const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
 
-  const currentSizeObj =
-    mattressSizes.find((s) => s.name === selectedSize) || mattressSizes[2];
+  const currentSizeObj = selectedSize
+    ? mattressSizes.find((s) => s.name === selectedSize)
+    : null;
 
   const handleEnquireWithSelection = () => {
     setIsEnquiryOpen(true);
   };
 
-  // Gallery images (main + secondary)
-  const galleryImages = [
-    product.image,
-    ...(product.secondaryImage && product.secondaryImage !== product.image
-      ? [product.secondaryImage]
-      : []),
-  ];
+  // Gallery images (gallery list or fallback to main + secondary)
+  const galleryImages =
+    product.gallery && product.gallery.length > 0
+      ? product.gallery
+      : [
+          product.image,
+          ...(product.secondaryImage && product.secondaryImage !== product.image
+            ? [product.secondaryImage]
+            : []),
+        ];
 
   // Highlights for the soft blue feature box (matching screenshot model)
   const highlightBullets = [
@@ -99,55 +101,57 @@ export default function ProductDetailClient({
           </div>
         </section>
 
-        {/* Main Product Showcase Card (Enlarged width on large screens matching screenshot model) */}
-        <section className="max-w-[1550px] 2xl:max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 pt-8 sm:pt-12">
-          <div className="bg-white rounded-[32px] sm:rounded-[44px] lg:rounded-[48px] p-6 sm:p-10 lg:p-12 xl:p-16 shadow-sm border border-slate-100">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 xl:gap-16 items-start">
-              {/* Left Column: Framed Image Stage + Sub-images only (matching screenshot) */}
+        {/* Main Product Showcase Card */}
+        <section className="max-w-[1550px] 2xl:max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 pt-6 sm:pt-10">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 xl:p-12 shadow-sm border border-slate-100">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-14 items-start">
+              {/* Left Column: Image fills this entire side with NO gray box */}
               <div className="lg:col-span-6 flex flex-col">
-                {/* Main Image Frame (Spacious rounded container) */}
-                <div className="bg-[#F4F5F7] p-3 sm:p-5 lg:p-7 rounded-[28px] sm:rounded-[36px] border border-slate-100/80">
-                  <div className="relative aspect-[4/3] w-full rounded-[20px] sm:rounded-[28px] overflow-hidden bg-white shadow-xs">
-                    <Image
-                      src={activeImage}
-                      alt={product.name}
-                      fill
-                      priority
-                      className="object-cover object-center transition-all duration-500"
-                    />
-                  </div>
+                {/* Main Image Showcase - shows full image uncropped */}
+                <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-slate-100 bg-white">
+                  <Image
+                    src={activeImage}
+                    alt={product.name}
+                    width={1400}
+                    height={1100}
+                    priority
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="w-full h-auto object-contain block transition-all duration-300"
+                  />
                 </div>
 
                 {/* Sub-images / Thumbnails row directly below image */}
-                <div className="flex items-center gap-3.5 mt-4 sm:mt-6">
-                  {galleryImages.map((imgSrc, idx) => {
-                    const isActive = activeImage === imgSrc;
-                    return (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => setActiveImage(imgSrc)}
-                        className={`relative w-20 h-16 sm:w-24 sm:h-20 lg:w-26 lg:h-22 rounded-xl sm:rounded-2xl p-0.5 overflow-hidden transition-all duration-200 cursor-pointer ${
-                          isActive
-                            ? "border-2 border-[#1C3144] shadow-sm scale-105"
-                            : "border-2 border-slate-200/80 opacity-60 hover:opacity-100 hover:border-slate-300"
-                        }`}
-                      >
-                        <div className="relative w-full h-full rounded-lg sm:rounded-xl overflow-hidden bg-slate-100">
-                          <Image
-                            src={imgSrc}
-                            alt={`${product.name} view ${idx + 1}`}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+                {galleryImages.length > 1 && (
+                  <div className="flex items-center gap-3 mt-4 sm:mt-5">
+                    {galleryImages.map((imgSrc, idx) => {
+                      const isActive = activeImage === imgSrc;
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => setActiveImage(imgSrc)}
+                          className={`relative w-20 h-16 sm:w-24 sm:h-20 rounded-xl p-0.5 overflow-hidden transition-all duration-200 cursor-pointer ${
+                            isActive
+                              ? "border-2 border-[#1C3144] shadow-sm scale-105"
+                              : "border-2 border-slate-200 opacity-60 hover:opacity-100 hover:border-slate-400"
+                          }`}
+                        >
+                          <div className="relative w-full h-full rounded-lg overflow-hidden bg-slate-50">
+                            <Image
+                              src={imgSrc}
+                              alt={`${product.name} view ${idx + 1}`}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
-              {/* Right Column: Title, Description, Blue Feature Box, Cot Sizes & CTAs */}
+                {/* Right Column: Title, Description, Blue Feature Box, Materials & CTAs */}
               <div className="lg:col-span-6 flex flex-col justify-start">
                 {/* 1. Category Pill (matching screenshot 'Lightings') */}
                 <span className="inline-block w-fit bg-[#E8F0FE] text-[#1C3144] px-4 py-1.5 rounded-full text-xs font-bold tracking-wide mb-3 sm:mb-4">
@@ -180,72 +184,7 @@ export default function ProductDetailClient({
                   </div>
                 </div>
 
-                {/* 5. Cot Size Selector (for Mattresses) */}
-                {isMattress && (
-                  <div className="mb-6 p-5 sm:p-6 rounded-2xl sm:rounded-3xl bg-slate-50 border border-slate-200/80">
-                    <div className="flex items-center justify-between mb-3.5">
-                      <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                        Select Cot Size
-                      </span>
-
-                      {/* Size Chart Button with react-icons LuRuler */}
-                      <button
-                        id="product-detail-size-chart-btn"
-                        onClick={() => setIsSizeChartOpen(true)}
-                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#1C3144] hover:bg-[#253f58] text-white font-bold text-xs shadow-sm transition-all duration-300 hover:scale-105 cursor-pointer"
-                      >
-                        <LuRuler className="w-3.5 h-3.5" />
-                        <span>Size Chart</span>
-                      </button>
-                    </div>
-
-                    {/* Cot Size Chips */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mb-3.5">
-                      {mattressSizes.map((size) => {
-                        const isSelected = selectedSize === size.name;
-                        return (
-                          <button
-                            key={size.name}
-                            type="button"
-                            onClick={() => setSelectedSize(size.name)}
-                            className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
-                              isSelected
-                                ? "bg-[#1C3144] text-white border-[#1C3144] shadow-md scale-[1.02]"
-                                : "bg-white text-[#1C3144] border-slate-200 hover:border-slate-300"
-                            }`}
-                          >
-                            <span className="text-xs font-bold block">
-                              {size.name}
-                            </span>
-                            <span
-                              className={`text-[11px] font-mono mt-0.5 block ${
-                                isSelected ? "text-white/80" : "text-slate-500"
-                              }`}
-                            >
-                              {size.dimension}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {/* Cot Fit Note */}
-                    <div className="text-xs sm:text-sm text-slate-500 flex items-center justify-between">
-                      <span>
-                        Fits <strong>{currentSizeObj.approxBedSize}</strong> bed
-                        frame
-                      </span>
-                      <button
-                        onClick={() => setIsSizeChartOpen(true)}
-                        className="text-[#1C3144] hover:text-[#D1B07A] font-bold underline cursor-pointer"
-                      >
-                        View Full Size Table ↗
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {/* 6. Pillow Dimensions (if Pillow) */}
+                {/* 5. Pillow Dimensions (if Pillow) */}
                 {isPillow && product.size && (
                   <div className="mb-6 p-5 rounded-2xl bg-[#E8F0FE] border border-blue-100 flex items-center justify-between">
                     <div>
@@ -264,27 +203,7 @@ export default function ProductDetailClient({
                     </div>
                   </div>
                 )}
-
-                {/* 7. Layer Materials */}
-                {product.materials && (
-                  <div className="mb-6">
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2.5">
-                      Core Construction Layers
-                    </h4>
-                    <div className="flex flex-wrap gap-2">
-                      {product.materials.map((mat, i) => (
-                        <span
-                          key={i}
-                          className="px-3 py-1.5 rounded-xl bg-slate-100 text-[#1C3144] text-xs font-medium border border-slate-200/80"
-                        >
-                          {mat}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* 8. Bottom Action Buttons (Matching design system) */}
+                {/* 6. Bottom Action Buttons (Matching design system) */}
                 <div className="pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {/* Primary Solid Button: Enquire Now */}
                   <button
@@ -293,7 +212,7 @@ export default function ProductDetailClient({
                     className="w-full py-4 sm:py-4.5 px-6 sm:px-8 rounded-2xl bg-[#1C3144] hover:bg-[#253f58] text-white font-bold text-sm sm:text-base text-center transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer flex items-center justify-center gap-2"
                   >
                     <span>Enquire Now</span>
-                    {isMattress && (
+                    {selectedSize && (
                       <span className="text-xs text-white/80">
                         ({selectedSize})
                       </span>
@@ -307,7 +226,7 @@ export default function ProductDetailClient({
                       className="w-full py-4 sm:py-4.5 px-6 sm:px-8 rounded-2xl bg-white border-2 border-[#1C3144] text-[#1C3144] hover:bg-[#1C3144] hover:text-white font-bold text-sm sm:text-base text-center transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
                     >
                       <LuRuler className="w-4 h-4" />
-                      <span>View Cot Size Chart</span>
+                      <span>View Size Chart</span>
                     </button>
                   ) : (
                     <Link
@@ -366,7 +285,7 @@ export default function ProductDetailClient({
       <SizeChartModal
         isOpen={isSizeChartOpen}
         onClose={() => setIsSizeChartOpen(false)}
-        selectedSize={selectedSize}
+        selectedSize={selectedSize || mattressSizes[2]?.name}
         onSelectSize={(size) => setSelectedSize(size)}
         onEnquireNow={(size) => {
           setSelectedSize(size || selectedSize);
@@ -379,15 +298,15 @@ export default function ProductDetailClient({
         isOpen={isEnquiryOpen}
         onClose={() => setIsEnquiryOpen(false)}
         productName={
-          isMattress
+          isMattress && selectedSize && currentSizeObj
             ? `${product.name} (${selectedSize} - ${currentSizeObj.dimension})`
             : product.size
             ? `${product.name} (${product.size})`
             : product.name
         }
         subtitle={
-          isMattress
-            ? `Bed cot fit: ${currentSizeObj.approxBedSize}`
+          isMattress && currentSizeObj
+            ? `Bed frame fit: ${currentSizeObj.approxBedSize}`
             : undefined
         }
       />

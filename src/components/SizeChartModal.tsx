@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MATTRESS_SIZES, MattressSizeInfo } from "@/data/products";
+import { MATTRESS_SIZES } from "@/data/products";
 
 interface SizeChartModalProps {
   isOpen: boolean;
@@ -22,9 +22,6 @@ export default function SizeChartModal({
   const [activeTab, setActiveTab] = useState<string>(
     selectedSize || MATTRESS_SIZES[2].name // Queen default
   );
-
-  const currentSize: MattressSizeInfo =
-    MATTRESS_SIZES.find((s) => s.name === activeTab) || MATTRESS_SIZES[2];
 
   return (
     <AnimatePresence>
@@ -161,69 +158,6 @@ export default function SizeChartModal({
                       })}
                     </tbody>
                   </table>
-                </div>
-              </div>
-
-              {/* Interactive Visual Cot Preview Box */}
-              <div className="bg-gradient-to-br from-primary/5 to-secondary/10 p-5 rounded-2xl border border-secondary/20">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                  <div>
-                    <span className="text-[11px] font-bold uppercase tracking-widest text-secondary block">
-                      Active Selection Preview
-                    </span>
-                    <h4 className="text-lg font-bold text-primary">
-                      {currentSize.name} — {currentSize.dimension} ({currentSize.approxBedSize})
-                    </h4>
-                  </div>
-
-                  <span className="text-xs bg-white text-primary font-bold px-3 py-1 rounded-full border border-primary/10 shadow-xs self-start sm:self-auto">
-                    Fits {currentSize.approxBedSize} Bed Cot
-                  </span>
-                </div>
-
-                <p className="text-xs sm:text-sm text-primary/75 leading-relaxed">
-                  {currentSize.description}
-                </p>
-
-                {/* Cot Graphic representation */}
-                <div className="mt-4 pt-4 border-t border-primary/10 grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div className="bg-white/80 p-3 rounded-xl border border-primary/5">
-                    <span className="text-[10px] uppercase font-bold text-primary/60 block">Length</span>
-                    <span className="text-sm font-bold text-primary">75 inches (6.25 ft)</span>
-                  </div>
-                  <div className="bg-white/80 p-3 rounded-xl border border-primary/5">
-                    <span className="text-[10px] uppercase font-bold text-primary/60 block">Width</span>
-                    <span className="text-sm font-bold text-primary">
-                      {currentSize.name === "Single Cot" && "36 in (3 ft)"}
-                      {currentSize.name === "Double Cot" && "48 in (4 ft)"}
-                      {currentSize.name === "Queen Size" && "60 in (5 ft)"}
-                      {currentSize.name === "King Size" && "72 in (6 ft)"}
-                    </span>
-                  </div>
-                  <div className="bg-white/80 p-3 rounded-xl border border-primary/5">
-                    <span className="text-[10px] uppercase font-bold text-primary/60 block">Ideal For</span>
-                    <span className="text-sm font-bold text-primary">
-                      {currentSize.name === "Single Cot" && "Single Sleeper"}
-                      {currentSize.name === "Double Cot" && "Adult / Space-saver"}
-                      {currentSize.name === "Queen Size" && "Couples (Popular)"}
-                      {currentSize.name === "King Size" && "Master Bed Luxury"}
-                    </span>
-                  </div>
-                  <div className="bg-white/80 p-3 rounded-xl border border-primary/5">
-                    <span className="text-[10px] uppercase font-bold text-primary/60 block">Customizable</span>
-                    <span className="text-sm font-bold text-secondary">Yes on Request</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* How to Measure Tips */}
-              <div className="bg-white p-4 rounded-2xl border border-primary/10 flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-secondary/20 text-primary flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
-                  📐
-                </div>
-                <div className="text-xs sm:text-sm text-primary/80">
-                  <span className="font-bold text-primary block">How to measure your cot correctly:</span>
-                  Measure the inner frame of your bed where the mattress sits (Length × Width). If your cot is slightly off-standard, ELVA crafts custom-fit sizes upon request!
                 </div>
               </div>
             </div>
