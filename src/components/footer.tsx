@@ -35,7 +35,7 @@ export default function Footer() {
                             <Link href="/" className="text-white/85 hover:text-secondary transition-all duration-300 hover:translate-x-1.5 inline-block">Home</Link>
                             <Link href="/about" className="text-white/85 hover:text-secondary transition-all duration-300 hover:translate-x-1.5 inline-block">About Us</Link>
                             <Link href="/products" className="text-white/85 hover:text-secondary transition-all duration-300 hover:translate-x-1.5 inline-block">Products</Link>
-                            <Link href="#brochure" className="text-white/85 hover:text-secondary transition-all duration-300 hover:translate-x-1.5 inline-block">Brochure</Link>
+                            <Link href="/contact" className="text-white/85 hover:text-secondary transition-all duration-300 hover:translate-x-1.5 inline-block">Contact Us</Link>
                         </nav>
                     </div>
 

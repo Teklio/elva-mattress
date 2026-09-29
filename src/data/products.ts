@@ -49,6 +49,7 @@ export interface Product {
   badge?: string;
   image: string;
   secondaryImage?: string;
+  gallery?: string[];
   comfortScale?: string;
   materials?: string[];
   isComingSoon?: boolean;
@@ -78,8 +79,13 @@ export const PRODUCTS: Product[] = [
     availableSizes: MATTRESS_SIZES,
     warranty: "8-Year Comprehensive Warranty",
     badge: "8 Years Warranty",
-    image: "/products/bouncy-mattress.jpg",
-    secondaryImage: "/products/bouncy-mattress-detail.jpg",
+    image: "/products/bouncy.jpeg",
+    secondaryImage: "/products/bouncy-mattress.jpg",
+    gallery: [
+      "/products/bouncy.jpeg",
+      "/products/bouncy-mattress.jpg",
+      "/products/bouncy-mattress-detail.jpg",
+    ],
     comfortScale: "Plush Soft (3/10)",
     materials: ["Super Soft Foam Core", "Breathable Quilted Knit", "High Resilient Base"],
   },
@@ -103,8 +109,13 @@ export const PRODUCTS: Product[] = [
     availableSizes: MATTRESS_SIZES,
     warranty: "10-Year Warranty",
     badge: "Eco Latex Core",
-    image: "/products/twin-latex.jpg",
-    secondaryImage: "/products/twin-latex-detail.jpg",
+    image: "/products/twinlatex.jpeg",
+    secondaryImage: "/products/twin-latex.jpg",
+    gallery: [
+      "/products/twinlatex.jpeg",
+      "/products/twin-latex.jpg",
+      "/products/twin-latex-detail.jpg",
+    ],
     comfortScale: "Medium-Responsive (5.5/10)",
     materials: ["2\" Natural Latex", "2\" Rebound Foam", "2\" HR Ortho Foam"],
   },
@@ -128,8 +139,13 @@ export const PRODUCTS: Product[] = [
     availableSizes: MATTRESS_SIZES,
     warranty: "10-Year Warranty",
     badge: "Pillow Top Luxury",
-    image: "/products/floty-spring-pillow-top.jpg",
-    secondaryImage: "/products/floty-spring-pillow-top-detail.jpg",
+    image: "/products/floty-spring.jpeg",
+    secondaryImage: "/products/floty-spring-pillow-top.jpg",
+    gallery: [
+      "/products/floty-spring.jpeg",
+      "/products/floty-spring-pillow-top.jpg",
+      "/products/floty-spring-pillow-top-detail.jpg",
+    ],
     comfortScale: "Medium-Plush (4/10)",
     materials: ["Pocketed Steel Coils", "2\" Super Soft Foam", "Premium Damask Pillow Top"],
   },
