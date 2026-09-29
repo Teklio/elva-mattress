@@ -7,10 +7,10 @@ import Header from "./Heder";
 
 // Carousel images list (user-configured)
 const carouselImages = [
-  "/hero3.png",
-  "/hero4.png",
-  "/hero1.png",
-  "/hero5.png"
+  "/1.jpeg",
+  "/2.jpeg",
+  "/3.jpeg",
+  "/4.jpeg"
 ];
 
 interface ZzzParticle {
@@ -105,7 +105,7 @@ export default function Hero() {
 
       {/* ── Left — Image Panel (Auto Carousel) ── */}
       <motion.div
-        className="relative w-full h-[30vh] sm:h-[38vh] md:h-[45vh] lg:h-full lg:w-[55%] overflow-hidden bg-black"
+        className="relative w-full h-[38vh] md:h-[45vh] lg:h-full lg:w-[65%] overflow-hidden bg-black"
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.75, ease: "easeOut" }}

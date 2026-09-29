@@ -1,34 +1,33 @@
 "use client";
 
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ProductCategory } from "@/data/products";
+import { ProductCategory, Product } from "@/data/products";
 
 interface CategoriesSectionProps {
   onSelectCategory?: (category: ProductCategory) => void;
   isHomePage?: boolean;
+  initialProducts?: Product[];
 }
 
-export const CATEGORIES_DATA = [
+export const BASE_CATEGORIES_DATA = [
   {
     name: "Mattress" as ProductCategory,
     title: "Mattresses",
-    modelsCount: "6 Models Available",
     image: "/categories/mattress-white.jpg",
     actionText: "View Collection →",
   },
   {
     name: "Pillows" as ProductCategory,
     title: "Pillows",
-    modelsCount: "5 Models Available",
     image: "/categories/pillows-white.jpg",
     actionText: "View Collection →",
   },
   {
     name: "Bed Cover" as ProductCategory,
     title: "Bed Cover",
-    modelsCount: "Arriving Soon",
     image: "/categories/bedcover-clean.jpg",
     badge: "Coming Soon",
     actionText: "Join Waitlist →",
@@ -38,7 +37,47 @@ export const CATEGORIES_DATA = [
 export default function CategoriesSection({
   onSelectCategory,
   isHomePage = false,
+  initialProducts = [],
 }: CategoriesSectionProps) {
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+
+  useEffect(() => {
+    if (initialProducts && initialProducts.length > 0) {
+      setProducts(initialProducts);
+    } else if (products.length === 0) {
+      fetch("/api/products")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.products && Array.isArray(data.products)) {
+            setProducts(data.products);
+          }
+        })
+        .catch((err) => console.error("Error fetching live categories count:", err));
+    }
+  }, [initialProducts, products.length]);
+
+  // Compute live models count per category
+  const categoriesWithLiveCount = useMemo(() => {
+    return BASE_CATEGORIES_DATA.map((cat) => {
+      const count = products.filter((p) => p.category === cat.name).length;
+      let modelsCount = "";
+
+      if (count > 0) {
+        modelsCount = `${count} ${count === 1 ? "Model Available" : "Models Available"}`;
+      } else if (cat.name === "Bed Cover") {
+        modelsCount = "Arriving Soon";
+      } else {
+        modelsCount = "0 Models Available";
+      }
+
+      return {
+        ...cat,
+        modelsCount,
+        count,
+      };
+    });
+  }, [products]);
+
   const handleCardClick = (catName: ProductCategory) => {
     if (onSelectCategory) {
       onSelectCategory(catName);
@@ -61,9 +100,9 @@ export default function CategoriesSection({
         </p>
       </div>
 
-      {/* 3 Category Cards in One Line on Large Screen with increased width */}
+      {/* 3 Category Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
-        {CATEGORIES_DATA.map((cat) => {
+        {categoriesWithLiveCount.map((cat) => {
           const isBedCover = cat.name === "Bed Cover";
 
           const cardContent = (
@@ -73,7 +112,7 @@ export default function CategoriesSection({
               className="group bg-white rounded-[32px] p-5 sm:p-6 shadow-sm hover:shadow-2xl border border-slate-100 transition-all duration-300 cursor-pointer flex flex-col justify-between h-full"
             >
               <div>
-                {/* Image Showcase - Pure product image on clean white background */}
+                {/* Image Showcase */}
                 <div className="relative aspect-[16/10] sm:aspect-[4/3] rounded-[24px] overflow-hidden bg-white border border-slate-100/80 mb-6">
                   <Image
                     src={cat.image}
@@ -83,8 +122,8 @@ export default function CategoriesSection({
                     className="object-contain p-3 group-hover:scale-105 transition-transform duration-600 ease-out"
                   />
 
-                  {/* Optional coming soon badge on Bed Cover */}
-                  {cat.badge && (
+                  {/* Optional coming soon badge */}
+                  {cat.count === 0 && cat.badge && (
                     <div className="absolute top-4 right-4 z-10">
                       <span className="bg-amber-400 text-[#1C3144] text-xs font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-md">
                         {cat.badge}
@@ -99,9 +138,9 @@ export default function CategoriesSection({
                 </h3>
               </div>
 
-              {/* Bottom Card Footer */}
+              {/* Bottom Card Footer with Live Models Count */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-100 text-xs sm:text-sm font-bold">
-                <span className={isBedCover ? "text-amber-700" : "text-slate-600"}>
+                <span className={isBedCover && cat.count === 0 ? "text-amber-700" : "text-slate-600"}>
                   {cat.modelsCount}
                 </span>
                 <span className="text-[#1C3144] group-hover:translate-x-1.5 transition-transform flex items-center gap-1">

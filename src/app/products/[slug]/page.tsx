@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { PRODUCTS, MATTRESS_SIZES } from "@/data/products";
+import { getStoryblokProductBySlug, getStoryblokProducts } from "@/lib/storyblok";
 import ProductDetailClient from "./ProductDetailClient";
 
 interface Props {
@@ -8,14 +9,15 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return PRODUCTS.filter((p) => !p.isComingSoon).map((product) => ({
+  const products = await getStoryblokProducts();
+  return products.filter((p) => !p.isComingSoon).map((product) => ({
     slug: product.slug,
   }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = PRODUCTS.find((p) => p.slug === slug);
+  const product = await getStoryblokProductBySlug(slug);
 
   if (!product) {
     return {
@@ -24,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const pageUrl = `https://elvamattress.com/products/${product.slug}`;
-  const imageUrl = `https://elvamattress.com${product.image}`;
+  const imageUrl = product.image.startsWith("http") ? product.image : `https://elvamattress.com${product.image}`;
 
   return {
     title: `${product.name} – ${product.type}`,
@@ -67,13 +69,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
-  const product = PRODUCTS.find((p) => p.slug === slug);
+  const product = await getStoryblokProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
 
-  const relatedProducts = PRODUCTS.filter(
+  const allProducts = await getStoryblokProducts();
+  const relatedProducts = allProducts.filter(
     (p) => p.category === product.category && p.slug !== product.slug
   ).slice(0, 3);
 

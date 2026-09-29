@@ -35,12 +35,17 @@ export default function ProductDetailClient({
   // Modals state
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
   const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
+  const [enquiryOverride, setEnquiryOverride] = useState<{
+    name: string;
+    subtitle?: string;
+  } | null>(null);
 
   const currentSizeObj = selectedSize
     ? mattressSizes.find((s) => s.name === selectedSize)
     : null;
 
   const handleEnquireWithSelection = () => {
+    setEnquiryOverride(null);
     setIsEnquiryOpen(true);
   };
 
@@ -268,7 +273,8 @@ export default function ProductDetailClient({
                 <ProductCard
                   key={rel.id}
                   product={rel}
-                  onOpenEnquiry={() => {
+                  onOpenEnquiry={(name, subtitle) => {
+                    setEnquiryOverride({ name, subtitle });
                     setIsEnquiryOpen(true);
                   }}
                 />
@@ -289,6 +295,7 @@ export default function ProductDetailClient({
         onSelectSize={(size) => setSelectedSize(size)}
         onEnquireNow={(size) => {
           setSelectedSize(size || selectedSize);
+          setEnquiryOverride(null);
           setIsEnquiryOpen(true);
         }}
       />
@@ -296,16 +303,23 @@ export default function ProductDetailClient({
       {/* Enquiry Form Modal */}
       <EnquiryModal
         isOpen={isEnquiryOpen}
-        onClose={() => setIsEnquiryOpen(false)}
+        onClose={() => {
+          setIsEnquiryOpen(false);
+          setEnquiryOverride(null);
+        }}
         productName={
-          isMattress && selectedSize && currentSizeObj
+          enquiryOverride
+            ? enquiryOverride.name
+            : isMattress && selectedSize && currentSizeObj
             ? `${product.name} (${selectedSize} - ${currentSizeObj.dimension})`
             : product.size
             ? `${product.name} (${product.size})`
             : product.name
         }
         subtitle={
-          isMattress && currentSizeObj
+          enquiryOverride
+            ? enquiryOverride.subtitle
+            : isMattress && currentSizeObj
             ? `Bed frame fit: ${currentSizeObj.approxBedSize}`
             : undefined
         }

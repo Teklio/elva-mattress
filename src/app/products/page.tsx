@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,16 +14,30 @@ import {
   PRODUCTS,
   MATTRESS_SIZES,
   ProductCategory,
+  Product,
 } from "@/data/products";
 import { FiBox, FiShield, FiZap, FiChevronRight, FiSearch, FiArrowRight } from "react-icons/fi";
 import { IoBedOutline, IoCloudOutline, IoSparklesOutline } from "react-icons/io5";
 import { LuRuler } from "react-icons/lu";
 
 export default function ProductsPage() {
+  const [productList, setProductList] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | "All">("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
   const [initialSizeForChart, setInitialSizeForChart] = useState<string | undefined>(undefined);
+
+  // Fetch Storyblok products dynamically
+  useEffect(() => {
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.products && Array.isArray(data.products)) {
+          setProductList(data.products);
+        }
+      })
+      .catch((err) => console.error("Error loading Storyblok products:", err));
+  }, []);
 
   // Enquiry modal state
   const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
@@ -40,7 +54,7 @@ export default function ProductsPage() {
   ];
 
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter((product) => {
+    return productList.filter((product) => {
       const matchesCategory =
         selectedCategory === "All" || product.category === selectedCategory;
       const matchesSearch =
@@ -54,7 +68,7 @@ export default function ProductsPage() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [productList, selectedCategory, searchQuery]);
 
   const handleOpenEnquiry = (name: string, subtitle?: string) => {
     setEnquiryProduct({ name, subtitle });
@@ -215,6 +229,7 @@ export default function ProductsPage() {
         {/* "OUR CATEGORIES" SECTION (3-card design, new images, no icons) */}
         {/* ======================================================== */}
         <CategoriesSection
+          initialProducts={productList}
           onSelectCategory={(cat) => {
             setSelectedCategory(cat);
             scrollToProducts();

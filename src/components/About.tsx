@@ -180,7 +180,7 @@ export default function About() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="bg-secondary border border-white/10 rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center backdrop-blur-sm"
         >
-          <span className="text-primary text-4xl sm:text-5xl font-black mb-3">
+          <span className="text-primary text-4xl sm:text-6xl font-black mb-3">
             <AnimatedCounter value={15} suffix="+" />
           </span>
           <span className="text-primary text-xs sm:text-sm font-medium uppercase tracking-wider">
@@ -195,7 +195,7 @@ export default function About() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="bg-secondary border border-white/10 rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center backdrop-blur-sm"
         >
-          <span className="text-primary text-4xl sm:text-5xl font-black mb-3">
+          <span className="text-primary text-4xl sm:text-6xl font-black mb-3">
             <AnimatedCounter value={10} suffix="k+" />
           </span>
           <span className="text-primary text-xs sm:text-sm font-medium uppercase tracking-wider">
@@ -210,7 +210,7 @@ export default function About() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="bg-secondary border border-white/10 rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center backdrop-blur-sm"
         >
-          <span className="text-primary text-4xl sm:text-5xl font-black mb-3">
+          <span className="text-primary text-4xl sm:text-6xl font-black mb-3">
             <AnimatedCounter value={99.8} suffix="%" decimals={1} />
           </span>
           <span className="text-primary text-xs sm:text-sm font-medium uppercase tracking-wider">

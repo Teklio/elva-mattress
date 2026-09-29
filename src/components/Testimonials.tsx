@@ -3,87 +3,64 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
+import { FaQuoteLeft, FaStar, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-const testimonials = [
-  {
-    name: "Aiswarya Rajendran",
-    location: "Kochi, Kerala",
-    image: "/testimonials/aiswarya.jpg",
-    text: "The ergonomic support of the Elva mattress has completely transformed my sleep. Waking up without back pain is a blessing I never expected. Highly recommended!",
-    rating: 5,
-    tag: "Ortho Comfort",
-  },
-  {
-    name: "Rahul Menon",
-    location: "Perinthalmanna, Malappuram",
-    image: "/testimonials/rahul.jpg",
-    text: "I was skeptical about the thermal regulation, but it actually works wonders. Even during humid Kerala nights, the mattress stays wonderfully cool and breathable.",
-    rating: 5,
-    tag: "Cooling Tech",
-  },
-  {
-    name: "Dr. Priya Nambiar",
-    location: "Kozhikode, Kerala",
-    image: "/testimonials/priya.jpg",
-    text: "True luxury and orthopaedic excellence. The premium textiles feel sublime, and the spinal alignment is balanced to perfection. Worth every rupee.",
-    rating: 5,
-    tag: "Spinal Care",
-  },
-  {
-    name: "Sandeep Varma",
-    location: "Thrissur, Kerala",
-    image: "/testimonials/sandeep.jpg",
-    text: "We upgraded to Elva recently and the difference is night and day. Quiet luxury at its finest. My wife and I get the deepest, most restorative sleep.",
-    rating: 5,
-    tag: "Luxury Rest",
-  },
-  {
-    name: "Fathima Shameer",
-    location: "Manjeri, Malappuram",
-    image: "/testimonials/fathima.jpg",
-    text: "Exceptional comfort and zero partner disturbance. Delivered quickly and the quality of stitching and materials is second to none in Kerala!",
-    rating: 5,
-    tag: "Motion Isolation",
-  },
-  {
-    name: "Harikrishnan Nair",
-    location: "Thiruvananthapuram, Kerala",
-    image: "/testimonials/harikrishnan.jpg",
-    text: "After trying multiple conventional mattresses, Elva is a complete game changer for posture and neck relief. Outstanding craftsmanship!",
-    rating: 5,
-    tag: "Ergonomic Support",
-  },
-];
+export interface TestimonialItem {
+  id?: string;
+  name: string;
+  location: string;
+  image?: string;
+  text: string;
+  rating: number;
+  tag: string;
+}
 
 function StarRating({ count }: { count: number }) {
+  const safeCount = Math.max(1, Math.min(5, Math.round(count) || 5));
   return (
-    <div className="flex items-center gap-1 mb-4">
-      {[...Array(count)].map((_, i) => (
-        <svg
+    <div className="flex items-center justify-center gap-1.5 my-3">
+      {[...Array(5)].map((_, i) => (
+        <FaStar
           key={i}
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="w-4 h-4 text-secondary drop-shadow-[0_0_8px_rgba(202,138,4,0.3)]"
-        >
-          <path
-            fillRule="evenodd"
-            d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
-            clipRule="evenodd"
-          />
-        </svg>
+          className={`w-4 h-4 transition-colors ${
+            i < safeCount
+              ? "text-secondary drop-shadow-[0_0_6px_rgba(209,176,122,0.5)]"
+              : "text-white/20"
+          }`}
+        />
       ))}
     </div>
   );
 }
 
-export default function Testimonials() {
+export default function Testimonials({
+  initialTestimonials = [],
+}: {
+  initialTestimonials?: TestimonialItem[];
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-80px" });
 
+  const [testimonials, setTestimonials] = useState<TestimonialItem[]>(initialTestimonials);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [visibleCount, setVisibleCount] = useState(3);
+
+  // Sync initialTestimonials or fetch from API
+  useEffect(() => {
+    if (initialTestimonials && initialTestimonials.length > 0) {
+      setTestimonials(initialTestimonials);
+    } else if (testimonials.length === 0) {
+      fetch("/api/testimonials")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.testimonials && Array.isArray(data.testimonials)) {
+            setTestimonials(data.testimonials);
+          }
+        })
+        .catch((err) => console.error("Error loading testimonials:", err));
+    }
+  }, [initialTestimonials, testimonials.length]);
 
   // Responsive items count
   useEffect(() => {
@@ -102,65 +79,75 @@ export default function Testimonials() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const maxIndex = testimonials.length - visibleCount;
+  const total = testimonials.length;
+  const effectiveVisibleCount = Math.min(visibleCount, Math.max(1, total));
+  const maxIndex = Math.max(0, total - effectiveVisibleCount);
 
   const nextSlide = useCallback(() => {
+    if (maxIndex === 0) return;
     setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
   }, [maxIndex]);
 
   const prevSlide = useCallback(() => {
+    if (maxIndex === 0) return;
     setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
   }, [maxIndex]);
 
   // Autoplay Timer
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || maxIndex === 0) return;
     const interval = setInterval(() => {
       nextSlide();
-    }, 4000);
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [isPaused, nextSlide]);
+  }, [isPaused, nextSlide, maxIndex]);
+
+  if (total === 0) {
+    return null;
+  }
+
+  const isSingle = total === 1;
 
   return (
     <section
       ref={containerRef}
-      className="py-24 sm:py-32 bg-primary text-white overflow-hidden relative"
+      className="py-20 sm:py-28 bg-transparent text-primary relative overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
       onTouchEnd={() => setIsPaused(false)}
     >
-      {/* Decorative Glow Elements */}
-      <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-3xl pointer-events-none" />
-
       <div className="max-w-7xl mx-auto px-6 sm:px-12 md:px-16 relative z-10">
-        {/* Header */}
+        {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 25 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16 sm:mb-20"
+          className="text-center mb-14 sm:mb-16"
         >
-          <span className="text-secondary text-sm font-bold uppercase tracking-[0.3em] mb-4 block">
-            Client Stories
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tight text-white mb-6">
-            Words From Rested Sleepers
+          <h2 className="text-4xl sm:text-5xl font-extrabold text-primary tracking-tight mb-4">
+            What Our Clients Say
           </h2>
-          <div className="w-16 h-1 bg-secondary mx-auto" />
+          <p className="text-slate-600 text-base sm:text-md max-w-xl mx-auto font-medium">
+            Hear from those who've transformed their sleep with Elva.
+          </p>
         </motion.div>
 
-        {/* Carousel Container */}
+        {/* Testimonials Display */}
         <div className="relative">
-          {/* Slider Viewport */}
-          <div className="overflow-hidden py-4 -my-4">
+          <div className={`overflow-hidden py-4 -my-4 ${isSingle ? "flex justify-center" : ""}`}>
             <motion.div
-              className="flex transition-transform duration-700 ease-out"
-              animate={{
-                x: `-${currentIndex * (100 / visibleCount)}%`,
-              }}
+              className={`flex transition-transform duration-700 ease-out ${
+                isSingle ? "w-full max-w-xl justify-center" : ""
+              }`}
+              animate={
+                isSingle
+                  ? {}
+                  : {
+                      x: `-${currentIndex * (100 / effectiveVisibleCount)}%`,
+                    }
+              }
               transition={{
                 type: "spring",
                 stiffness: 70,
@@ -169,102 +156,103 @@ export default function Testimonials() {
             >
               {testimonials.map((testimonial, idx) => (
                 <div
-                  key={idx}
-                  style={{
-                    flex: `0 0 ${100 / visibleCount}%`,
-                  }}
-                  className="px-3 sm:px-4 flex"
+                  key={testimonial.id || idx}
+                  style={
+                    isSingle
+                      ? { width: "100%" }
+                      : {
+                          flex: `0 0 ${100 / effectiveVisibleCount}%`,
+                        }
+                  }
+                  className="px-3 sm:px-4 flex justify-center"
                 >
-                  <div className="w-full bg-white/[0.06] border border-white/10 rounded-3xl p-7 sm:p-8 backdrop-blur-md flex flex-col justify-between hover:bg-white/[0.1] hover:border-secondary/40 transition-all duration-300 shadow-xl group">
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <StarRating count={testimonial.rating} />
-                        <span className="text-[11px] font-semibold uppercase tracking-wider text-secondary bg-secondary/15 border border-secondary/20 px-2.5 py-1 rounded-full">
-                          {testimonial.tag}
-                        </span>
-                      </div>
-
-                      <p className="text-white/85 font-light leading-relaxed text-sm sm:text-base italic mb-6">
-                        "{testimonial.text}"
-                      </p>
+                  {/* Testimonial Card with Blue BG, 2px Gold Border & White Text */}
+                  <div className="w-full max-w-xl bg-primary border-8 border-secondary rounded-[32px] p-8 sm:p-10 shadow-xl relative flex flex-col items-center text-center transition-all duration-300 hover:shadow-2xl hover:scale-[1.015] group">
+                    {/* Top-Left Quote Icon in Gold */}
+                    <div className="absolute top-6 left-6 sm:top-8 sm:left-8 text-secondary">
+                      <FaQuoteLeft className="w-7 h-7 sm:w-8 sm:h-8" />
                     </div>
 
-                    <div className="flex items-center gap-4 pt-4 border-t border-white/10 mt-auto">
-                      <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-secondary/60 flex-shrink-0 shadow-md group-hover:scale-105 transition-transform duration-300">
+                    {/* Centered Avatar with Gold Ring */}
+                    <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-secondary shadow-md mb-5 bg-secondary/20 flex items-center justify-center flex-shrink-0">
+                      {testimonial.image ? (
                         <Image
                           src={testimonial.image}
                           alt={testimonial.name}
                           fill
                           className="object-cover"
-                          sizes="56px"
+                          sizes="96px"
                         />
-                      </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="text-white font-semibold text-base truncate">
-                            {testimonial.name}
-                          </h4>
-                          <svg
-                            className="w-4 h-4 text-secondary flex-shrink-0"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                        <p className="text-white/60 text-xs font-light truncate">
-                          {testimonial.location}
-                        </p>
-                      </div>
+                      ) : (
+                        <span className="text-secondary font-bold text-2xl">
+                          {testimonial.name?.charAt(0) || "U"}
+                        </span>
+                      )}
                     </div>
+
+                    {/* Centered Name in White */}
+                    <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight mb-1">
+                      {testimonial.name}.
+                    </h3>
+
+                    {/* Location in Gold */}
+                    {testimonial.location && (
+                      <p className="text-xs sm:text-sm font-semibold text-secondary uppercase tracking-wider mb-2">
+                        {testimonial.location}
+                      </p>
+                    )}
+
+                    {/* Star Rating */}
+                    <StarRating count={testimonial.rating} />
+
+                    {/* Centered Quote Text in White */}
+                    <p className="text-white/90 leading-relaxed text-base sm:text-lg font-light italic mt-2">
+                      "{testimonial.text}"
+                    </p>
                   </div>
                 </div>
               ))}
             </motion.div>
           </div>
 
-          {/* Navigation Arrows */}
-          <div className="flex items-center justify-between pointer-events-none absolute top-1/2 -translate-y-1/2 -left-3 -right-3 sm:-left-6 sm:-right-6">
-            <button
-              onClick={prevSlide}
-              aria-label="Previous review"
-              className="pointer-events-auto w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-primary/80 border border-white/20 text-white hover:text-primary hover:bg-secondary hover:border-secondary transition-all duration-300 flex items-center justify-center shadow-lg backdrop-blur-md hover:scale-110 active:scale-95"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-              </svg>
-            </button>
+          {/* Navigation Arrows for multiple items */}
+          {maxIndex > 0 && (
+            <>
+              <div className="flex items-center justify-between pointer-events-none absolute top-1/2 -translate-y-1/2 -left-3 -right-3 sm:-left-6 sm:-right-6">
+                <button
+                  onClick={prevSlide}
+                  aria-label="Previous review"
+                  className="pointer-events-auto w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-primary border-2 border-secondary text-secondary hover:text-primary hover:bg-secondary transition-all duration-300 flex items-center justify-center shadow-lg hover:scale-110 active:scale-95"
+                >
+                  <FaChevronLeft className="w-4 h-4" />
+                </button>
 
-            <button
-              onClick={nextSlide}
-              aria-label="Next review"
-              className="pointer-events-auto w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-primary/80 border border-white/20 text-white hover:text-primary hover:bg-secondary hover:border-secondary transition-all duration-300 flex items-center justify-center shadow-lg backdrop-blur-md hover:scale-110 active:scale-95"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-              </svg>
-            </button>
-          </div>
+                <button
+                  onClick={nextSlide}
+                  aria-label="Next review"
+                  className="pointer-events-auto w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-primary border-2 border-secondary text-secondary hover:text-primary hover:bg-secondary transition-all duration-300 flex items-center justify-center shadow-lg hover:scale-110 active:scale-95"
+                >
+                  <FaChevronRight className="w-4 h-4" />
+                </button>
+              </div>
 
-          {/* Pagination Dots & Autoplay Indicator */}
-          <div className="flex items-center justify-center gap-2.5 mt-10">
-            {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentIndex(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
-                  currentIndex === idx
-                    ? "w-8 bg-secondary"
-                    : "w-2.5 bg-white/25 hover:bg-white/50"
-                }`}
-              />
-            ))}
-          </div>
+              {/* Pagination Dots */}
+              <div className="flex items-center justify-center gap-2 mt-8">
+                {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentIndex(idx)}
+                    aria-label={`Go to slide ${idx + 1}`}
+                    className={`h-2.5 rounded-full transition-all duration-300 ${
+                      currentIndex === idx
+                        ? "w-8 bg-secondary shadow-[0_0_8px_rgba(209,176,122,0.5)]"
+                        : "w-2.5 bg-secondary/30 hover:bg-secondary/60"
+                    }`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>
