@@ -35,6 +35,7 @@ export default function Footer() {
                             <Link href="/" className="text-white/85 hover:text-secondary transition-all duration-300 hover:translate-x-1.5 inline-block">Home</Link>
                             <Link href="/about" className="text-white/85 hover:text-secondary transition-all duration-300 hover:translate-x-1.5 inline-block">About Us</Link>
                             <Link href="/products" className="text-white/85 hover:text-secondary transition-all duration-300 hover:translate-x-1.5 inline-block">Products</Link>
+                            <Link href="/blog" className="text-white/85 hover:text-secondary transition-all duration-300 hover:translate-x-1.5 inline-block">Blogs</Link>
                             <Link href="/contact" className="text-white/85 hover:text-secondary transition-all duration-300 hover:translate-x-1.5 inline-block">Contact Us</Link>
                         </nav>
                     </div>
@@ -57,7 +58,7 @@ export default function Footer() {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                                     </svg>
                                 </span>
-                                <span className="break-all">elwamattress1@gmail.com</span>
+                                <span className="break-all">elvamattress1@gmail.com</span>
                             </a>
                             <a
                                 href="https://maps.app.goo.gl/bRpkTwoay5GqiMtM7?g_st=ic"

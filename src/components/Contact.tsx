@@ -16,23 +16,63 @@ export default function Contact() {
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage("");
+
+    const phoneClean = formData.phone.trim();
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(phoneClean)) {
+      setErrorMessage("Please enter a valid 10-digit phone number.");
+      return;
+    }
+
+    const emailClean = formData.email.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailClean)) {
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
+
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          phone: phoneClean,
+          email: emailClean,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setSubmitted(true);
         setFormData({
           name: "",
           phone: "",
           email: "",
           message: "",
         });
-      }, 4000);
-    }, 600);
+        setTimeout(() => {
+          setSubmitted(false);
+        }, 5000);
+      } else {
+        setErrorMessage(data.error || "Failed to submit form. Please try again.");
+      }
+    } catch (err) {
+      console.error("Contact submission error:", err);
+      setErrorMessage("Something went wrong. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -116,7 +156,7 @@ export default function Contact() {
               </div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-secondary">Email Us</p>
-                <p className="text-base sm:text-lg font-semibold text-primary group-hover:text-secondary transition-colors break-all">contact@elvamattress.com</p>
+                <p className="text-base sm:text-lg font-semibold text-primary group-hover:text-secondary transition-colors break-all">elvamattress1@gmail.com</p>
               </div>
             </a>
 
@@ -163,7 +203,7 @@ export default function Contact() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="py-12 text-center"
               >
-                <div className="w-14 h-14 rounded-full bg-secondary text-primary flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                <div className="w-14 h-14 rounded-full bg-emerald-500 text-white flex items-center justify-center mx-auto mb-4 text-xl font-bold shadow-md shadow-emerald-500/20">
                   ✓
                 </div>
                 <h4 className="text-xl font-bold text-primary mb-2">Message Sent!</h4>
@@ -173,6 +213,11 @@ export default function Contact() {
               </motion.div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
+                {errorMessage && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl text-xs font-semibold">
+                    {errorMessage}
+                  </div>
+                )}
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-primary/80 mb-1.5">
                     Your Name
@@ -194,9 +239,13 @@ export default function Contact() {
                   <input
                     type="tel"
                     required
+                    maxLength={10}
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="Enter your phone number"
+                    onChange={(e) => {
+                      const cleaned = e.target.value.replace(/\D/g, "").slice(0, 10);
+                      setFormData({ ...formData, phone: cleaned });
+                    }}
+                    placeholder="Enter 10-digit phone number"
                     className="w-full px-4 py-3 rounded-xl bg-white border border-primary/15 text-primary placeholder-primary/40 focus:outline-none focus:border-secondary transition-colors text-sm"
                   />
                 </div>
