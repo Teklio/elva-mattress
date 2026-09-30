@@ -3,8 +3,8 @@
 import { motion } from "framer-motion";
 
 export default function FloatingActions() {
-  const phoneNumber = "+919876543210";
-  const whatsappUrl = `https://wa.me/919876543210?text=${encodeURIComponent(
+  const phoneNumber = "+919947419910";
+  const whatsappUrl = `https://wa.me/919947419910?text=${encodeURIComponent(
     "Hello ELVA! I would like to know more about your luxury medicated mattresses."
   )}`;
 

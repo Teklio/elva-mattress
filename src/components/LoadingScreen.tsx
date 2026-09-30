@@ -2,21 +2,29 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function LoadingScreen() {
-  const [isLoading, setIsLoading] = useState(true);
-  const pathname = usePathname();
+  const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2500);
+    setMounted(true);
+    // Check if website has already loaded in this browser session
+    const hasLoaded = typeof window !== "undefined" && sessionStorage.getItem("elva_has_loaded");
+    
+    if (!hasLoaded) {
+      setIsLoading(true);
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+        sessionStorage.setItem("elva_has_loaded", "true");
+      }, 1800);
 
-    return () => clearTimeout(timer);
-  }, [pathname]);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  if (!mounted || !isLoading) return null;
 
   return (
     <AnimatePresence mode="wait">

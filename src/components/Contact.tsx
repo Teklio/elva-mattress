@@ -130,7 +130,7 @@ export default function Contact() {
 
             {/* Phone Card */}
             <a
-              href="tel:+919876543210"
+              href="tel:+919947419910"
               className="group p-5 sm:p-6 rounded-2xl bg-primary/5 border border-primary/10 hover:border-secondary transition-all duration-300 flex items-center gap-4"
             >
               <div className="w-12 h-12 rounded-full bg-secondary text-primary flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
@@ -146,7 +146,7 @@ export default function Contact() {
 
             {/* Email Card */}
             <a
-              href="mailto:contact@elvamattress.com"
+              href="mailto:elvamattress1@gmail.com"
               className="group p-5 sm:p-6 rounded-2xl bg-primary/5 border border-primary/10 hover:border-secondary transition-all duration-300 flex items-center gap-4"
             >
               <div className="w-12 h-12 rounded-full bg-secondary text-primary flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
@@ -162,7 +162,7 @@ export default function Contact() {
 
             {/* Location Card */}
             <a
-              href="https://maps.app.goo.gl/bRpkTwoay5GqiMtM7?g_st=ic"
+              href="https://share.google/Fyw99CfBuPh6dmFYD"
               target="_blank"
               rel="noopener noreferrer"
               className="group p-5 sm:p-6 rounded-2xl bg-primary/5 border border-primary/10 hover:border-secondary transition-all duration-300 flex items-start gap-4"
