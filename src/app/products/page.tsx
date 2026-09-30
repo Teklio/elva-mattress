@@ -121,53 +121,18 @@ export default function ProductsPage() {
               <span className="text-[#D1B07A]">Products</span>
             </nav>
 
-            {/* Hero Main: Left Text & CTA, Right Pure PNG Product Showcase */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center mb-16">
-              {/* Left Column */}
-              <div className="lg:col-span-6 xl:col-span-6">
-                <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-black tracking-tight text-white leading-[1.12] mb-6">
-                  Complete Sleep &amp; <br />
-                  Restorative Solutions <br />
-                  Under One Roof
-                </h1>
-
-                <p className="text-white/80 text-base sm:text-lg font-light leading-relaxed mb-8 max-w-xl">
-                  Premium orthopedic mattresses, ergonomic cervical contour pillows, and luxury
-                  protective bedding engineered for restorative spinal support, safety, and peak everyday performance.
-                </p>
-
-                {/* Action Buttons */}
-                <div className="flex flex-wrap items-center gap-4">
-                  <button
-                    onClick={scrollToProducts}
-                    className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-[#1C3144] font-bold text-sm px-7 py-4 rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer"
-                  >
-                    <span>Explore Products</span>
-                    <FiChevronRight className="w-4 h-4 text-[#1C3144]" />
-                  </button>
-
-                  {/* Highlighted Size Chart Button in Hero */}
-                  <button
-                    id="hero-size-chart-guide-btn"
-                    onClick={() => handleOpenSizeChart()}
-                    className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/25 font-bold text-sm px-7 py-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer"
-                  >
-                    <LuRuler className="w-4 h-4 text-[#D1B07A]" />
-                    <span>Size Chart</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Right Column: Much larger PNG Product Showcase on Large Screens */}
-              <div className="lg:col-span-6 xl:col-span-6 flex items-center justify-center relative mt-6 lg:mt-0">
+            {/* Hero Main: Mobile (Image first, content second), Desktop (Left content, Right image) */}
+            <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 items-center mb-12 lg:mb-16">
+              {/* Product Showcase Image — Order 1 on Mobile (Aligned Center), Order 2 on Desktop */}
+              <div className="order-1 lg:order-2 lg:col-span-6 flex items-center justify-center relative w-full mb-2 lg:mb-0">
                 {/* Soft ambient golden backlight */}
-                <div className="absolute w-80 h-80 sm:w-96 sm:h-96 lg:w-[480px] lg:h-[480px] bg-[#D1B07A]/20 rounded-full blur-3xl pointer-events-none -z-10" />
+                <div className="absolute w-64 h-64 sm:w-96 sm:h-96 lg:w-[480px] lg:h-[480px] bg-[#D1B07A]/20 rounded-full blur-3xl pointer-events-none -z-10" />
 
                 <motion.div
-                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 15, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  className="relative w-full max-w-lg sm:max-w-xl lg:max-w-2xl xl:max-w-3xl aspect-[16/11] lg:aspect-[4/3] lg:scale-110 xl:scale-115 transform-gpu"
+                  className="relative w-full max-w-sm sm:max-w-xl lg:max-w-2xl xl:max-w-3xl aspect-[16/11] lg:aspect-[4/3] lg:scale-110 xl:scale-115 transform-gpu"
                 >
                   <Image
                     src="/sleep-ensemble.png"
@@ -175,48 +140,83 @@ export default function ProductsPage() {
                     fill
                     priority
                     sizes="(max-width: 1024px) 90vw, 55vw"
-                    className="object-contain filter drop-shadow-[0_30px_45px_rgba(0,0,0,0.65)] hover:scale-105 transition-transform duration-700 ease-out"
+                    className="object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.6)] sm:drop-shadow-[0_30px_45px_rgba(0,0,0,0.65)] hover:scale-105 transition-transform duration-700 ease-out"
                   />
                 </motion.div>
               </div>
+
+              {/* Text Content & CTAs — Order 2 on Mobile (Below Image), Order 1 on Desktop */}
+              <div className="order-2 lg:order-1 lg:col-span-6 text-center lg:text-left w-full">
+                <h1 className="text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-black tracking-tight text-white leading-[1.18] lg:leading-[1.12] mb-3 sm:mb-6">
+                  Complete Sleep &amp; <br />
+                  Restorative Solutions <br className="hidden sm:inline" />
+                  Under One Roof
+                </h1>
+
+                <p className="text-white/80 text-xs sm:text-base lg:text-lg font-light leading-relaxed mb-6 sm:mb-8 max-w-xl mx-auto lg:mx-0">
+                  Premium orthopedic mattresses, ergonomic cervical contour pillows, and luxury
+                  protective bedding engineered for restorative spinal support, safety, and peak everyday performance.
+                </p>
+
+                {/* Action Buttons — Single Row on Mobile */}
+                <div className="flex flex-row items-center justify-center lg:justify-start gap-2.5 sm:gap-4 w-full">
+                  <button
+                    onClick={scrollToProducts}
+                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-white hover:bg-slate-100 text-[#1C3144] font-bold text-xs sm:text-sm px-3.5 sm:px-7 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer whitespace-nowrap"
+                  >
+                    <span>Explore Products</span>
+                    <FiChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#1C3144]" />
+                  </button>
+
+                  {/* Highlighted Size Chart Button in Hero */}
+                  <button
+                    id="hero-size-chart-guide-btn"
+                    onClick={() => handleOpenSizeChart()}
+                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/25 font-bold text-xs sm:text-sm px-3.5 sm:px-7 py-3 sm:py-4 rounded-xl sm:rounded-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer whitespace-nowrap"
+                  >
+                    <LuRuler className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D1B07A]" />
+                    <span>Size Chart</span>
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* 3 Stat Cards Row (Exact Match to Screenshot 1 with react-icons) */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 pt-6">
+            {/* 3 Stat Cards Row — Mobile Compact Grid */}
+            <div className="grid grid-cols-3 gap-2 sm:gap-6 pt-2 sm:pt-6">
               {/* Stat 1 */}
-              <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-5 sm:p-6 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-white/15 flex items-center justify-center text-xl shrink-0 text-white">
-                  <FiBox className="w-6 h-6 text-white" />
+              <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-xl sm:rounded-2xl p-2.5 sm:p-6 flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-4 justify-center">
+                <div className="w-7 h-7 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-white/15 flex items-center justify-center text-xs sm:text-xl shrink-0 text-white">
+                  <FiBox className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-white">500+</div>
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-white/70">
+                  <div className="text-sm sm:text-3xl font-extrabold text-white leading-tight">500+</div>
+                  <div className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-white/70 leading-tight">
                     HAPPY SLEEPERS
                   </div>
                 </div>
               </div>
 
               {/* Stat 2 */}
-              <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-5 sm:p-6 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-white/15 flex items-center justify-center text-xl shrink-0 text-white">
-                  <FiShield className="w-6 h-6 text-white" />
+              <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-xl sm:rounded-2xl p-2.5 sm:p-6 flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-4 justify-center">
+                <div className="w-7 h-7 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-white/15 flex items-center justify-center text-xs sm:text-xl shrink-0 text-white">
+                  <FiShield className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-white">15+</div>
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-white/70">
-                    YEARS TRUST &amp; LEGACY
+                  <div className="text-sm sm:text-3xl font-extrabold text-white leading-tight">15+</div>
+                  <div className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-white/70 leading-tight">
+                    YEARS TRUST
                   </div>
                 </div>
               </div>
 
               {/* Stat 3 */}
-              <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-5 sm:p-6 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-white/15 flex items-center justify-center text-xl shrink-0 text-white">
-                  <FiZap className="w-6 h-6 text-white" />
+              <div className="bg-white/10 backdrop-blur-md border border-white/15 rounded-xl sm:rounded-2xl p-2.5 sm:p-6 flex flex-col sm:flex-row items-center text-center sm:text-left gap-1 sm:gap-4 justify-center">
+                <div className="w-7 h-7 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-white/15 flex items-center justify-center text-xs sm:text-xl shrink-0 text-white">
+                  <FiZap className="w-3.5 h-3.5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-white">98%</div>
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-white/70">
+                  <div className="text-sm sm:text-3xl font-extrabold text-white leading-tight">98%</div>
+                  <div className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-white/70 leading-tight">
                     SATISFACTION
                   </div>
                 </div>
@@ -253,18 +253,18 @@ export default function ProductsPage() {
             </p>
           </div>
 
-          {/* Filter Tabs: Removed Size Chart, Increased button padding and text size */}
-          <div className="flex items-center justify-center mb-14">
-            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          {/* Filter Tabs: Single Row on Mobile, Flex Centered on Desktop */}
+          <div className="flex items-center justify-center mb-10 sm:mb-14 w-full">
+            <div className="grid grid-cols-4 gap-1.5 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-4 w-full max-w-md sm:max-w-none">
               {categoriesList.map((cat) => {
                 const isActive = selectedCategory === cat.value;
                 return (
                   <button
                     key={cat.label}
                     onClick={() => setSelectedCategory(cat.value)}
-                    className={`px-8 sm:px-11 py-3.5 sm:py-4 rounded-full text-base sm:text-lg font-bold transition-all duration-300 cursor-pointer shadow-xs hover:shadow-md ${
+                    className={`px-2 sm:px-11 py-2.5 sm:py-4 rounded-full text-xs sm:text-lg font-bold text-center transition-all duration-300 cursor-pointer shadow-xs hover:shadow-md whitespace-nowrap ${
                       isActive
-                        ? "bg-[#1C3144] text-white shadow-md scale-105"
+                        ? "bg-[#1C3144] text-white shadow-md scale-102 sm:scale-105"
                         : "bg-white text-slate-600 hover:text-[#1C3144] hover:bg-slate-50 border border-slate-200/90"
                     }`}
                   >
