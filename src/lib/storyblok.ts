@@ -94,9 +94,10 @@ export async function getStoryblokTestimonials(): Promise<FormattedTestimonial[]
 
   try {
     const res = await fetch(
-      `https://api.storyblok.com/v2/cdn/stories/testimonials?token=${token}&version=${version}&cv=${Date.now()}`,
+      `https://api.storyblok.com/v2/cdn/stories/testimonials?token=${token}&version=${version}`,
       {
         next: { revalidate: 60 },
+        signal: AbortSignal.timeout(3000),
       }
     );
 
@@ -150,9 +151,10 @@ export async function getStoryblokBlogs(): Promise<FormattedBlog[]> {
 
   try {
     const res = await fetch(
-      `https://api.storyblok.com/v2/cdn/stories/blog?token=${token}&version=${version}&cv=${Date.now()}`,
+      `https://api.storyblok.com/v2/cdn/stories/blog?token=${token}&version=${version}`,
       {
         next: { revalidate: 60 },
+        signal: AbortSignal.timeout(3000),
       }
     );
 
@@ -226,9 +228,10 @@ export async function getStoryblokProducts(): Promise<Product[]> {
 
   try {
     const res = await fetch(
-      `https://api.storyblok.com/v2/cdn/stories/products?token=${token}&version=${version}&cv=${Date.now()}`,
+      `https://api.storyblok.com/v2/cdn/stories/products?token=${token}&version=${version}`,
       {
         next: { revalidate: 60 },
+        signal: AbortSignal.timeout(3000),
       }
     );
 

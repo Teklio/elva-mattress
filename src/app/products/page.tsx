@@ -21,7 +21,7 @@ import { IoBedOutline, IoCloudOutline, IoSparklesOutline } from "react-icons/io5
 import { LuRuler } from "react-icons/lu";
 
 export default function ProductsPage() {
-  const [productList, setProductList] = useState<Product[]>([]);
+  const [productList, setProductList] = useState<Product[]>(PRODUCTS);
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | "All">("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
@@ -32,7 +32,7 @@ export default function ProductsPage() {
     fetch("/api/products")
       .then((res) => res.json())
       .then((data) => {
-        if (data?.products && Array.isArray(data.products)) {
+        if (data?.products && Array.isArray(data.products) && data.products.length > 0) {
           setProductList(data.products);
         }
       })
